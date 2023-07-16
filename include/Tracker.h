@@ -11,7 +11,8 @@ class Tracker {
 public:
     Tracker(const std::string& reid_model_path);
     
-    void match(const std::vector<DetectedObject>& detections, const cv::Mat& frame);
+    void match(std::vector<Box>& detections, const cv::Mat& frame);
+    std::vector<Track> getTracks() const { return tracks; }
 
 private:
     std::vector<Track> tracks;

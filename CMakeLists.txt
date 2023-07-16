@@ -26,6 +26,7 @@ set(SOURCES
     ${PROJECT_SOURCE_DIR}/src/Detector.cpp
     ${PROJECT_SOURCE_DIR}/src/Reid.cpp
     ${PROJECT_SOURCE_DIR}/src/Track.cpp
+    ${PROJECT_SOURCE_DIR}/src/Tracker.cpp
 )
 
 add_library(libs ${SOURCES})
