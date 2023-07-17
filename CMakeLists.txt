@@ -17,6 +17,7 @@ include_directories(${OpenCV_INCLUDE_DIRS})
 # message(STATUS "FLTK_INCLUDE_DIRS: ${FLTK_INCLUDE_DIRS}")
 include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories(${PROJECT_SOURCE_DIR}/3rd_party/tvm/include)
+include_directories(${PROJECT_SOURCE_DIR}/3rd_party/fltk/include)
 include_directories(${PROJECT_SOURCE_DIR}/3rd_party/dmlc/include)
 include_directories(${PROJECT_SOURCE_DIR}/3rd_party/dlpack/include)
 
