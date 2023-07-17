@@ -16,6 +16,7 @@ std::string modelWeights = "../models/dev_models/pd_tiny4.weights";
 std::string modelConfiguration = "../models/dev_models/pd_tiny4.cfg";
 std::string classNamesFile = "../models/dev_models/pd.names";
 std::string reid_model_path = "../models/dep_models/osnet1.so";
+std::string filePath = "../data/clip.mp4";
 
 
 void create_directory(const std::string& dir_name) {
@@ -35,11 +36,12 @@ void process_video(std::string video_path) {
     Tracker tracker(reid_model_path);
     std::cout<< " Tracker created " <<std::endl;
     cv::VideoCapture cap(video_path); 
-    std::cout<< " Cap opened " <<std::endl;
 
     if(!cap.isOpened()) {
         std::cout << "Error opening video file" << std::endl;
         return;
+    }else{
+        std::cout<< " Cap opened " <<std::endl;
     }
 
     create_directory("output");
@@ -100,5 +102,10 @@ void button_cb(Fl_Widget* btn, void* userdata) {
 //     return Fl::run();
 // }
 int main(int argc, char** argv) {
-    process_video("../data/clip.mp4");
+    // std::cout << cv::getBuildInformation() << std::endl;
+    std::filesystem::path file_path(filePath);
+    if(!std::filesystem::exists(file_path)){
+        std::cout << filePath << " does not exist" <<std::endl;
+    }
+    process_video(filePath);
 }
