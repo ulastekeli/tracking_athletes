@@ -4,8 +4,8 @@
 
 int main()
 {
-    std::string modelWeights = "../models/dev_models/pd.weights";
-    std::string modelConfiguration = "../models/dev_models/pd.cfg";
+    std::string modelWeights = "../models/dev_models/pd_tiny4.weights";
+    std::string modelConfiguration = "../models/dev_models/pd_tiny4.cfg";
     std::string classNamesFile = "../models/dev_models/pd.names";
     
     ObjectDetector detector(modelWeights, modelConfiguration, classNamesFile);

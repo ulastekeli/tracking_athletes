@@ -7,13 +7,14 @@ find_package(OpenCV REQUIRED)
 # Find the FLTK and FLTK_IMAGES libraries
 find_library(FLTK_LIB
              NAMES fltk
-             HINTS "/usr/lib/x86_64-linux-gnu")
+             HINTS ${PROJECT_SOURCE_DIR}/3rd_party/fltk/lib)
 find_library(FLTK_IMAGES_LIB
              NAMES fltk_images
-             HINTS "/usr/lib/x86_64-linux-gnu")
+             HINTS ${PROJECT_SOURCE_DIR}/3rd_party/fltk/lib)
 
 include_directories(${OpenCV_INCLUDE_DIRS})
-include_directories(${FLTK_INCLUDE_DIRS})
+# include_directories(${FLTK_INCLUDE_DIRS})
+# message(STATUS "FLTK_INCLUDE_DIRS: ${FLTK_INCLUDE_DIRS}")
 include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories(${PROJECT_SOURCE_DIR}/3rd_party/tvm/include)
 include_directories(${PROJECT_SOURCE_DIR}/3rd_party/dmlc/include)
