@@ -10,11 +10,24 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <filesystem>
 
 std::string modelWeights = "../models/dev_models/pd_tiny4.weights";
 std::string modelConfiguration = "../models/dev_models/pd_tiny4.cfg";
 std::string classNamesFile = "../models/dev_models/pd.names";
 std::string reid_model_path = "../models/dep_models/osnet1.so";
+
+
+void create_directory(const std::string& dir_name) {
+    std::filesystem::path dir_path(dir_name);
+    if(!std::filesystem::exists(dir_path)) {
+        std::filesystem::create_directory(dir_path);
+        std::cout << "Directory created: " << dir_path << std::endl;
+    } else {
+        std::cout << "Directory already exists: " << dir_path << std::endl;
+    }
+}
+
 
 void process_video(std::string video_path) {
     ObjectDetector detector(modelWeights, modelConfiguration, classNamesFile);
@@ -28,6 +41,8 @@ void process_video(std::string video_path) {
         std::cout << "Error opening video file" << std::endl;
         return;
     }
+
+    create_directory("output");
 
     int frameNumber = 0;
     cv::Mat frame;
