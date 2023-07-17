@@ -12,11 +12,12 @@
 #include <sstream>
 #include <filesystem>
 
-std::string modelWeights = "../models/dev_models/pd_tiny4.weights";
-std::string modelConfiguration = "../models/dev_models/pd_tiny4.cfg";
+std::string modelWeights = "../models/dev_models/pd_tiny4_tennis.weights";
+std::string modelConfiguration = "../models/dev_models/pd_tiny4_tennis.cfg";
 std::string classNamesFile = "../models/dev_models/pd.names";
 std::string reid_model_path = "../models/dep_models/osnet1.so";
 std::string filePath = "../data/clip.mp4";
+bool show = false;
 
 
 void create_directory(const std::string& dir_name) {
@@ -47,6 +48,7 @@ void process_video(std::string video_path) {
     create_directory("output");
 
     int frameNumber = 0;
+    int track_frame_no = -1;
     cv::Mat frame;
 
     while(1) {
@@ -62,15 +64,32 @@ void process_video(std::string video_path) {
 
         std::ofstream outFile;
         std::stringstream ss;
-        ss << "output/tracks_" << frameNumber << ".txt";
+        ss << "output/" << frameNumber << ".txt";
         outFile.open(ss.str());
-
         for(const auto& track : tracker.getTracks()) {
+            track_frame_no = track.frame_history.back();
+            if (track_frame_no != frameNumber){
+                continue;
+            }
             const auto& box = track.box_history.back();
             outFile << track.id << " " << box.xmin << " " << box.ymin << " " << box.xmax << " " << box.ymax << std::endl;
-        }
+            if (show){
+                // Draw rectangle for bounding box
+                cv::rectangle(frame, cv::Point(box.xmin, box.ymin), cv::Point(box.xmax, box.ymax), cv::Scalar(0, 255, 0), 2);
 
+                // Draw text for track id
+                std::string label = std::to_string(track.id);
+                int baseline;
+                cv::Size labelSize = cv::getTextSize(label, cv::FONT_HERSHEY_SIMPLEX, 0.5, 1, &baseline);
+                cv::putText(frame, label, cv::Point(box.xmin, box.ymin + labelSize.height), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 255, 0), 1);
+            }
+        }
         outFile.close();
+        if (show){
+            // Display the image with bounding boxes
+            cv::imshow("Image", frame);
+            cv::waitKey(1);  // Wait for key press to close window
+        }        
         frameNumber++;
     }
     cap.release();

@@ -9,7 +9,6 @@ Tracker::Tracker(const std::string& reid_model_path)
     : id_counter(0), frame_no(0), reid(reid_model_path) {}
 
 void Tracker::match(std::vector<Box>& detections, const cv::Mat& frame) {
-    frame_no++;
     for (auto& det : detections) {
         std::vector<int> close_tracks;
         for (int i = 0; i < tracks.size(); ++i) {
@@ -17,7 +16,7 @@ void Tracker::match(std::vector<Box>& detections, const cv::Mat& frame) {
             const auto& box = track.box_history.back();
             float dist = std::sqrt(std::pow((box.xmin + box.xmax)/2 - (det.xmin + det.xmax)/2, 2) +
                                    std::pow((box.ymin + box.ymax)/2 - (det.ymin + det.ymax)/2, 2));
-            if (dist <= 30) {
+            if (dist <= 100) {
                 close_tracks.push_back(i);
             }
         }
@@ -57,4 +56,5 @@ void Tracker::match(std::vector<Box>& detections, const cv::Mat& frame) {
             tracks[best_track_idx].update(feature, frame_no, det);
         }
     }
+    frame_no++;
 }
