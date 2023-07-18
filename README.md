@@ -19,7 +19,7 @@ To build and run the project, follow these steps:
 git clone <repository_url>
 cd <repository_directory>
 # This step is required if opencv is not installed
-sudo cp 3rd_party/opencv/lib/* /usr/local/lib
+sudo cp ./3rd_party/opencv/lib/* /usr/local/lib
 # Create a build directory and navigate into it:
 mkdir build
 cd build
