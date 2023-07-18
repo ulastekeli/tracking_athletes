@@ -19,7 +19,7 @@ std::string reid_model_path = "../models/dep_models/osnet1.so";
 std::string filePath = "../data/clip.mp4";
 std::string detectionPath = "../output/dets";
 std::string imgSavePath = "../output/images";
-bool show = false;
+bool show = true;
 bool save = true;
 
 // Global color vector
@@ -109,7 +109,6 @@ void getCroppedImages(std::string videoPath) {
 
 
 void displayTracks(std::string videoPath) {
-    generateColors(100);
     create_directory(imgSavePath);
     cv::VideoCapture cap(videoPath);
     if (!cap.isOpened()) {
@@ -222,13 +221,13 @@ void process_video(std::string video_path) {
             outFile << track.id << " " << box.xmin << " " << box.ymin << " " << box.xmax << " " << box.ymax << std::endl;
             if (show || save){
                 // Draw rectangle for bounding box
-                cv::rectangle(frame, cv::Point(box.xmin, box.ymin), cv::Point(box.xmax, box.ymax), cv::Scalar(0, 255, 0), 2);
+                cv::rectangle(frame, cv::Point(box.xmin, box.ymin), cv::Point(box.xmax, box.ymax), getIdColor(track.id), 2);
 
                 // Draw text for track id
                 std::string label = std::to_string(track.id);
                 int baseline;
-                cv::Size labelSize = cv::getTextSize(label, cv::FONT_HERSHEY_SIMPLEX, 0.5, 1, &baseline);
-                cv::putText(frame, label, cv::Point(box.xmin, box.ymin + labelSize.height), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 255, 0), 1);
+                cv::Size labelSize = cv::getTextSize(label, cv::FONT_HERSHEY_SIMPLEX, 1, 1, &baseline);
+                cv::putText(frame, label, cv::Point(box.xmin, box.ymin + labelSize.height), cv::FONT_HERSHEY_SIMPLEX, 1, getIdColor(track.id), 2);
             }
         }
         outFile.close();
@@ -259,18 +258,8 @@ void button_cb(Fl_Widget* btn, void* userdata) {
     }
 }
 
-// int main(int argc, char** argv) {
-//     Fl_Window* window = new Fl_Window(400, 300);
-//     Fl_Button* button = new Fl_Button(50, 50, 100, 25, "Choose File");
-//     button->callback(button_cb);
-//     Fl_Box* box = new Fl_Box(50, 100, 200, 200);
-//     Fl_JPEG_Image* img = new Fl_JPEG_Image("../data/example.jpg");
-//     box->image(img);
-//     window->end();
-//     window->show(argc, argv);
-//     return Fl::run();
-// }
-int main(int argc, char** argv) {
+
+void run_wo_gui(){
     // std::cout << cv::getBuildInformation() << std::endl;
     std::filesystem::path file_path(filePath);
     if(!std::filesystem::exists(file_path)){
@@ -279,4 +268,19 @@ int main(int argc, char** argv) {
     process_video(filePath);
     // displayTracks(filePath);
     getCroppedImages(filePath);
+}
+
+int main(int argc, char** argv) {
+    Fl_Window* window = new Fl_Window(400, 300);
+    
+    Fl_Button* button = new Fl_Button(50, 50, 100, 25, "Choose File");
+    button->callback(button_cb);
+    
+    Fl_Box* box = new Fl_Box(50, 100, 200, 200);
+    Fl_JPEG_Image* img = new Fl_JPEG_Image("../data/example.jpg");
+    box->image(img);
+    
+    window->end();
+    window->show(argc, argv);
+    return Fl::run();
 }

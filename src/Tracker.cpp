@@ -19,7 +19,7 @@ void Tracker::match(std::vector<Box>& detections, const cv::Mat& frame) {
             float dist = std::sqrt(std::pow((box.xmin + box.xmax)/2 - (det.xmin + det.xmax)/2, 2) +
                                    std::pow((box.ymin + box.ymax)/2 - (det.ymin + det.ymax)/2, 2));
             
-            if (dist <= 100 * frameDif) {
+            if (dist <= 40 * frameDif) {
                 close_tracks.push_back(i);
             }
         }

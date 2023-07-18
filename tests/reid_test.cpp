@@ -19,7 +19,7 @@ int main()
 {
     ReidModel model("../models/dep_models/osnet1.so");
 
-    cv::Mat image = cv::imread("../data/reid/149_0.png", cv::IMREAD_COLOR);
+    cv::Mat image = cv::imread("../output/cropped/188_0.png", cv::IMREAD_COLOR);
     if (image.empty())
     {
         std::cout << "Could not open or find the image!\n";
@@ -28,13 +28,13 @@ int main()
     image.convertTo(image, CV_32F);
     std::vector<float> output = model.run(image);
 
-    cv::Mat image1 = cv::imread("../data/reid/150_2.png", cv::IMREAD_COLOR);
+    cv::Mat image1 = cv::imread("../output/cropped/189_5.png", cv::IMREAD_COLOR);
     image1.convertTo(image1, CV_32F);
     std::vector<float> output1 = model.run(image1);
 
 
 
-    cv::Mat image_dif = cv::imread("../data/reid/150_0.png", cv::IMREAD_COLOR);
+    cv::Mat image_dif = cv::imread("../output/cropped/189_0.png", cv::IMREAD_COLOR);
     image_dif.convertTo(image_dif, CV_32F);
     std::vector<float> output_dif = model.run(image_dif);
 

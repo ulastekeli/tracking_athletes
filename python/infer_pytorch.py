@@ -28,8 +28,8 @@ loaded_lib = tvm.runtime.load_module("../models/dep_models/osnet1.so")
 gen_module = tvm.contrib.graph_executor.GraphModule(loaded_lib["default"](tvm.cpu(0)))
 
 # Load and process the image
-image = cv2.imread("../output/cropped/149_0.png")
-image2 = cv2.imread("../output/cropped/150_2.png")
+image = cv2.imread("../output/cropped/188_5.png")
+image2 = cv2.imread("../output/cropped/189_0.png")
 
 out1 = run_inference(image, gen_module)
 out2 = run_inference(image2, gen_module)

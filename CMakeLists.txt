@@ -45,9 +45,9 @@ add_executable(opencv_detector_test ${PROJECT_SOURCE_DIR}/tests/opencv_detector_
 target_link_libraries(opencv_detector_test tracking)
 target_include_directories(opencv_detector_test PRIVATE "/usr/include")
 
-# add_executable(app_test ${PROJECT_SOURCE_DIR}/tests/app_test.cpp)
-# target_link_libraries(app_test tracking)
-# target_include_directories(app_test PRIVATE "/usr/include")
+add_executable(app_test ${PROJECT_SOURCE_DIR}/tests/app_test.cpp)
+target_link_libraries(app_test tracking)
+target_include_directories(app_test PRIVATE "/usr/include")
 
 add_executable(reid_test ${PROJECT_SOURCE_DIR}/tests/reid_test.cpp)
 target_link_libraries(reid_test tracking)
