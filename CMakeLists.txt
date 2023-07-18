@@ -3,7 +3,7 @@ project(Tracker)
 
 set(CMAKE_CXX_STANDARD 17)
 
-find_package(OpenCV REQUIRED)
+# find_package(OpenCV REQUIRED)
 # Find the FLTK and FLTK_IMAGES libraries
 # find_library(FLTK_LIB
 #              NAMES fltk
@@ -12,7 +12,14 @@ find_package(OpenCV REQUIRED)
 #              NAMES fltk_images
 #              HINTS ${PROJECT_SOURCE_DIR}/3rd_party/fltk/lib)
 
+# Find OpenCV in the 3rd_party directory
+set(OpenCV_DIR "${PROJECT_SOURCE_DIR}/3rd_party/opencv")
+find_package(OpenCV REQUIRED PATHS "${OpenCV_DIR}")
+
 include_directories(${OpenCV_INCLUDE_DIRS})
+link_directories(${OpenCV_LIB_DIR})
+
+
 # include_directories(${FLTK_INCLUDE_DIRS})
 # message(STATUS "FLTK_INCLUDE_DIRS: ${FLTK_INCLUDE_DIRS}")
 include_directories(${PROJECT_SOURCE_DIR}/include)
