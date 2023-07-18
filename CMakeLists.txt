@@ -27,6 +27,7 @@ include_directories(${PROJECT_SOURCE_DIR}/3rd_party/dlpack/include)
 link_directories(${PROJECT_SOURCE_DIR}/3rd_party/tvm/libs)
 link_directories(${PROJECT_SOURCE_DIR}/3rd_party/fltk/lib)
 link_directories(${PROJECT_SOURCE_DIR}/3rd_party/opencv/lib)
+link_directories(${PROJECT_SOURCE_DIR}/3rd_party)
 
 set(SOURCES
     ${PROJECT_SOURCE_DIR}/src/Box.cpp
