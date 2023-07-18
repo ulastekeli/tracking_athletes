@@ -6,9 +6,9 @@ from tvm import relay
 # Load pre-trained resnet50 model from torchvision
 # resnet50 = models.resnet50(pretrained=True)
 # resnet50 = resnet50.eval()
-scripted_model = torch.load("/home/tekeliulas/workspace/tracking_athletes/models/dev_models/best.torchscript")
+scripted_model = torch.load("../models/dev_models/osnet1_jit.pth")
 # Create a sample input
-input_shape = [1, 3, 416, 720]
+input_shape = [1, 3, 256, 128]
 input_data = torch.randn(input_shape)
 # scripted_model = torch.jit.trace(model, input_data).eval()
 
@@ -30,4 +30,4 @@ with tvm.transform.PassContext(opt_level=3):
 print("build ended")
 
 # Save the compiled module
-lib.export_library('yolov8n.so')
+lib.export_library('../models/dep_models/osnet1.so')

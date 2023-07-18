@@ -17,15 +17,53 @@ ReidModel::~ReidModel()
     // Destructor. No need to do anything as the Module's destructor will be called automatically.
 }
 
+cv::Mat ReidModel::normalizeImage(const cv::Mat& image) {
+    // Check if the image is not empty and has 3 channels
+    if (image.empty() || image.channels() != 3) {
+        std::cerr << "The input image is either empty or does not have 3 channels." << std::endl;
+        return cv::Mat();  // Return an empty cv::Mat
+    }
+
+    cv::Mat norm_image = image.clone();
+
+    // Assuming that the image is in BGR format
+    cv::Vec3f mean_values(0.406, 0.456, 0.485);
+    cv::Vec3f std_values(0.225, 0.224, 0.229);
+
+    // Iterate over all pixels
+    for (int y = 0; y < norm_image.rows; ++y) {
+        for (int x = 0; x < norm_image.cols; ++x) {
+            // Get pixel (x, y)
+            cv::Vec3f& pixel = norm_image.at<cv::Vec3f>(y, x);
+
+            // Normalize each channel
+            for (int i = 0; i < norm_image.channels(); ++i) {
+                pixel[i] = (pixel[i] - mean_values[i]) / std_values[i];
+            }
+            norm_image.at<cv::Vec3f>(y, x) = pixel;
+        }
+    }
+
+    return norm_image;
+}
+
 std::vector<float> ReidModel::run(const cv::Mat& image)
 {
     DLDevice dev{kDLCPU, 0};
     // Assumes image is in BGR format, CV_32F type, and already resized to the correct dimensions.
     cv::Mat image_transposed;
-    cv::transpose(image, image_transposed);
-    cv::resize(image_transposed, image_transposed, cv::Size(128, 256));
+    // cv::transpose(image, image_transposed);
+    cv::resize(image, image_transposed, cv::Size(128, 256));
     image_transposed.convertTo(image_transposed, CV_32F);
+    image_transposed /= 255.0;
+    // image_transposed = normalizeImage(image_transposed);
 
+
+    // cv::Mat blob;
+    // cv::dnn::blobFromImage(image, blob, 1/255.0, cv::Size(128, 256), cv::Scalar(0,0,0), true, false);
+    // std::cout<<blob.size()<<std::endl;
+    // image_transposed = normalizeImage(blob);
+    // std::cout<<blob.size()<<std::endl;
 
     // Check if the cv::Mat object is continuous.
     if (!image_transposed.isContinuous()) {

@@ -14,6 +14,7 @@ public:
     ~ReidModel();
     
     std::vector<float> run(const cv::Mat& image);
+    cv::Mat normalizeImage(const cv::Mat& image);
 
 private:
     tvm::runtime::Module mod;

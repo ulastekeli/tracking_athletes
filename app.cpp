@@ -276,7 +276,7 @@ int main(int argc, char** argv) {
     if(!std::filesystem::exists(file_path)){
         std::cout << filePath << " does not exist" <<std::endl;
     }
-    // process_video(filePath);
+    process_video(filePath);
     // displayTracks(filePath);
     getCroppedImages(filePath);
 }
