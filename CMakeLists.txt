@@ -37,9 +37,9 @@ add_library(tracking ${SOURCES})
 target_link_libraries(tracking ${OpenCV_LIBS} fltk fltk_images tvm_runtime dl)
 # target_link_libraries(libs )
 
-add_executable(app ${PROJECT_SOURCE_DIR}/app.cpp)
-target_link_libraries(app tracking)
-target_include_directories(app PRIVATE "/usr/include")
+add_executable(athleteTrackingApp ${PROJECT_SOURCE_DIR}/app.cpp)
+target_link_libraries(athleteTrackingApp tracking)
+target_include_directories(athleteTrackingApp PRIVATE "/usr/include")
 
 add_executable(opencv_detector_test ${PROJECT_SOURCE_DIR}/tests/opencv_detector_test.cpp)
 target_link_libraries(opencv_detector_test tracking)

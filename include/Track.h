@@ -6,6 +6,8 @@
 
 class Track {
 public:
+    static const int N;  // Declare the static variable
+
     int id;
     std::vector<Box> box_history;
     std::vector<int> frame_history;

@@ -13,12 +13,16 @@ public:
     
     void match(std::vector<Box>& detections, const cv::Mat& frame);
     std::vector<Track> getTracks() const { return tracks; }
+    std::vector<Track> getLastFrameTracks() const { return last_frame_tracks; }
+
 
 private:
     std::vector<Track> tracks;
+    std::vector<Track> last_frame_tracks;
     int id_counter;
     int frame_no;
     ReidModel reid;
+
 };
 
 #endif // TRACKER_H

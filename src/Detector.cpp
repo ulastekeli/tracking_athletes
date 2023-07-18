@@ -54,7 +54,6 @@ void ObjectDetector::postProcessing(cv::Mat& frame, const std::vector<cv::Mat>& 
     int counter = 0;
     for (size_t i = 0; i < outs.size(); ++i)
     {   
-        std::cout<<outs[i].size()<<std::endl;
         float* data = (float*)outs[i].data;
         for (int j = 0; j < outs[i].rows; ++j, data += outs[i].cols)
         {

@@ -23,10 +23,8 @@ void Tracker::match(std::vector<Box>& detections, const cv::Mat& frame) {
                 close_tracks.push_back(i);
             }
         }
-        std::cout<<close_tracks.size()<<std::endl;
         // Crop the detected object and get its feature
         det.checkBounds(frame.cols, frame.rows);
-        det.print();
 
         cv::Rect boundingBox(det.xmin, det.ymin, det.xmax - det.xmin, det.ymax - det.ymin);
         cv::Mat cropped = frame(boundingBox);
@@ -36,7 +34,7 @@ void Tracker::match(std::vector<Box>& detections, const cv::Mat& frame) {
             Track newTrack;
             newTrack.id = id_counter++;
             newTrack.update(feature, frame_no, det);
-            std::cout<< " New track. ID: " << newTrack.id << " frame no: " << frame_no << std::endl;
+            // std::cout<< " New track. ID: " << newTrack.id << " frame no: " << frame_no << std::endl;
             // Add the new track to the existing tracks
             tracks.push_back(newTrack);
 
@@ -55,9 +53,14 @@ void Tracker::match(std::vector<Box>& detections, const cv::Mat& frame) {
                     best_track_idx = idx;
                 }
             }
-
             // Update the best matching track
             tracks[best_track_idx].update(feature, frame_no, det);
+        }
+    }
+    last_frame_tracks.clear();
+    for(const auto& track : tracks) {
+        if(track.frame_history.back() == frame_no) {
+            last_frame_tracks.push_back(track);
         }
     }
     frame_no++;
