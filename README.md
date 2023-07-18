@@ -11,6 +11,8 @@ This project is a real-time video processing application that uses machine learn
 
 The application is built using CMake and requires OpenCV, FLTK, and a C++ compiler supporting the C++17 standard.
 
+OpenCV for C++ must be installed on the device.
+
 To build and run the project, follow these steps:
 
 1. Clone the repository:
