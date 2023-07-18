@@ -392,6 +392,10 @@ void VideoProcessor::processVideo(std::string videoPath, std::string inferenceOp
 
 int main(int argc, char **argv)
 {
+    createDirectory("../output");
+    createDirectory(detectionRoot);
+    createDirectory(imageSaveRoot);
+    createDirectory(croppedSaveRoot);
     generateColors(100);
 
     Fl_Window *window = new Fl_Window(1800, 1000, "Track Athletes");
