@@ -15,7 +15,6 @@
 
 std::string modelWeights = "../models/dev_models/pd_tiny4_tennis.weights";
 std::string modelConfiguration = "../models/dev_models/pd_tiny4_tennis.cfg";
-std::string classNamesFile = "../models/dev_models/pd.names";
 std::string reid_model_path = "../models/dep_models/osnet1.so";
 std::string filePath = "../data/clip.mp4";
 std::string detectionPath = "../output/dets";
@@ -56,6 +55,56 @@ void create_directory(const std::string& dir_name) {
     } else {
         std::cout << "Directory already exists: " << dir_path << std::endl;
     }
+}
+
+
+void getCroppedImages(std::string videoPath) {
+    generateColors(100);
+    create_directory("../output/cropped");
+    cv::VideoCapture cap(videoPath);
+    if (!cap.isOpened()) {
+        std::cerr << "ERROR: Can't open video file" << std::endl;
+        return;
+    }
+    else{
+        std::cout<<"Cap is opened"<<std::endl;
+    }
+
+    int frameId = 0;
+    cv::Mat frame;
+
+    while(1) {
+        cap >> frame;
+        if (frame.empty()) break;
+        std::cout<<"Displaying frame "<<frameId<<std::endl;
+        // Open the corresponding text file
+        std::ifstream inFile(detectionPath+"/"+ std::to_string(frameId) + ".txt");
+        if (!inFile) {
+            std::cerr << "ERROR: Can't open file " << detectionPath+"/"+ std::to_string(frameId) + ".txt" << std::endl;
+            return;
+        }
+
+        // Read each line of the file
+        std::string line;
+        while (std::getline(inFile, line)) {
+            std::istringstream iss(line);
+            int id, xmin, ymin, xmax, ymax;
+
+            if (!(iss >> id >> xmin >> ymin >> xmax >> ymax)) {
+                std::cerr << "ERROR: Can't parse line " << line << " in file " << frameId << ".txt" << std::endl;
+                return;
+            }
+
+            cv::Rect roi(xmin, ymin, xmax - xmin, ymax - ymin); // Define the region of interest
+            cv::Mat cropped = frame(roi); // Crop the image
+            cv::imwrite("../output/cropped/" + std::to_string(frameId) + "_" + std::to_string(id) + ".png", cropped); // Save the cropped image
+
+        }
+
+        frameId++;
+    }
+
+    cap.release();
 }
 
 
@@ -129,7 +178,7 @@ void displayTracks(std::string videoPath) {
 
 
 void process_video(std::string video_path) {
-    ObjectDetector detector(modelWeights, modelConfiguration, classNamesFile);
+    ObjectDetector detector(modelWeights, modelConfiguration);
     std::cout<< " Object detector created " <<std::endl;
     Tracker tracker(reid_model_path);
     std::cout<< " Tracker created " <<std::endl;
@@ -228,5 +277,6 @@ int main(int argc, char** argv) {
         std::cout << filePath << " does not exist" <<std::endl;
     }
     // process_video(filePath);
-    displayTracks(filePath);
+    // displayTracks(filePath);
+    getCroppedImages(filePath);
 }

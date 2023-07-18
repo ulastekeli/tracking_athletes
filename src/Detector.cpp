@@ -1,9 +1,8 @@
 #include "Detector.h"
 #include <fstream>
 
-ObjectDetector::ObjectDetector(const std::string& modelWeights, const std::string& modelConfiguration,
-                               const std::string& classNamesFile)
-    : modelWeights(modelWeights), modelConfiguration(modelConfiguration), classNamesFile(classNamesFile), 
+ObjectDetector::ObjectDetector(const std::string& modelWeights, const std::string& modelConfiguration)
+    : modelWeights(modelWeights), modelConfiguration(modelConfiguration), 
       confThreshold(0.4), nmsThreshold(0.2)
 {
     loadModel();
@@ -11,10 +10,6 @@ ObjectDetector::ObjectDetector(const std::string& modelWeights, const std::strin
 
 void ObjectDetector::loadModel()
 {
-    // Load names of classes
-    std::ifstream ifs(classNamesFile.c_str());
-    std::string line;
-    while (std::getline(ifs, line)) classNames.push_back(line);
 
     // Load the network
     net = cv::dnn::readNetFromDarknet(modelConfiguration, modelWeights);
@@ -58,7 +53,8 @@ void ObjectDetector::postProcessing(cv::Mat& frame, const std::vector<cv::Mat>& 
     std::vector<cv::Rect> boxes;
     int counter = 0;
     for (size_t i = 0; i < outs.size(); ++i)
-    {
+    {   
+        std::cout<<outs[i].size()<<std::endl;
         float* data = (float*)outs[i].data;
         for (int j = 0; j < outs[i].rows; ++j, data += outs[i].cols)
         {

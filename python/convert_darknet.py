@@ -132,11 +132,19 @@ REPO_URL = "https://github.com/dmlc/web-data/blob/main/darknet/"
 # weights_path = download_testdata(WEIGHTS_URL, WEIGHTS_NAME, module="darknet")
 
 
-cfg_path = "/home/rap018/workspace_ulas/misc/assignment/models/dev_models/pd_tiny4.cfg"
-weights_path = "/home/rap018/workspace_ulas/misc/assignment/models/dev_models/pd_tiny4.weights"
-img_path = "/home/rap018/workspace_ulas/misc/assignment/data/example.jpg"
-save_path = "/home/rap018/workspace_ulas/misc/assignment/models/dep_models/tiny4_detector.so"
-libso = "/home/rap018/workspace_ulas/misc/assignment/python/libdarknet2.0.so"
+# cfg_path = "/home/tekeliulas/workspace/tracking_athletes/models/dev_models/pd_tiny4_tennis.cfg"
+# weights_path = "/home/tekeliulas/workspace/tracking_athletes/models/dev_models/pd_tiny4_tennis.weights"
+
+cfg_path = "/home/tekeliulas/workspace/tracking_athletes/models/dev_models/pd_tiny3.cfg"
+weights_path = "/home/tekeliulas/workspace/tracking_athletes/models/dev_models/pd_tiny3_best.weights"
+
+img_path = "/home/tekeliulas/workspace/tracking_athletes/data/example.jpg"
+save_path = "/home/tekeliulas/workspace/tracking_athletes/models/dep_models/tiny3_tennis_detector.so"
+# libso = "/home/rap018/workspace_ulas/misc/assignment/python/libdarknet2.0.so"
+DARKNET_LIB = "libdarknet2.0.so"
+DARKNET_URL = REPO_URL + "lib/" + DARKNET_LIB + "?raw=true"
+libso = download_testdata(DARKNET_URL, DARKNET_LIB, module="darknet")
+# libso = "/home/tekeliulas/workspace/tracking_athletes/misc/libdarknet.so"
 DARKNET_LIB = __darknetffi__.dlopen(libso)
 net = DARKNET_LIB.load_network(cfg_path.encode(
     "utf-8"), weights_path.encode("utf-8"), 0)
@@ -151,7 +159,7 @@ mod, params = relay.frontend.from_darknet(net, dtype=dtype, shape=data.shape)
 target = tvm.target.Target("llvm", host="llvm")
 dev = tvm.cpu(0)
 data = np.empty([batch_size, net.c, net.h, net.w], dtype)
-shape = {"data": data.shape}
+shape = {"input0": data.shape}
 print("Compiling the model...")
 if os.path.exists(save_path):
     lib = tvm.runtime.module.load_module(save_path)
@@ -159,7 +167,7 @@ else:
     with tvm.transform.PassContext(opt_level=3):
         lib = relay.build(mod, target=target, params=params)
     # Save the compiled module
-    lib.export_library('tiny4_detector.so')
+    lib.export_library(save_path)
 
 m = graph_executor.GraphModule(lib["default"](dev))
 
@@ -170,8 +178,8 @@ print("Running the test image...")
 
 # detection
 # thresholds
-thresh = 0.5
-nms_thresh = 0.45
+thresh = 0.2
+nms_thresh = 0.2
 
 m.run()
 # get outputs
@@ -187,6 +195,7 @@ for i in range(3):
                  layer_attr[0], layer_attr[2], layer_attr[3])
     print(out_shape)
     layer_out["output"] = m.get_output(i * 4).numpy().reshape(out_shape)
+    print(layer_out["output"])
     layer_out["classes"] = layer_attr[4]
     tvm_out.append(layer_out)
 
@@ -201,3 +210,30 @@ dets = tvm.relay.testing.yolo_detection.fill_network_boxes(
 last_layer = net.layers[net.n - 1]
 tvm.relay.testing.yolo_detection.do_nms_sort(
     dets, last_layer.classes, nms_thresh)
+
+coco_name = "coco.names"
+coco_url = REPO_URL + "data/" + coco_name + "?raw=true"
+font_name = "arial.ttf"
+font_url = REPO_URL + "data/" + font_name + "?raw=true"
+coco_path = download_testdata(coco_url, coco_name, module="data")
+font_path = download_testdata(font_url, font_name, module="data")
+
+with open(coco_path) as f:
+    content = f.readlines()
+
+names = [x.strip() for x in content]
+
+print(dets)
+tvm.relay.testing.yolo_detection.show_detections(img, dets, thresh, names, last_layer.classes)
+tvm.relay.testing.yolo_detection.draw_detections(
+    font_path, img, dets, thresh, names, last_layer.classes
+)
+
+plt.imshow(img.transpose(1, 2, 0))
+plt.savefig("result.jpg")
+
+img = img.astype("uint8")
+img = img.transpose(1,2,0)
+print("writing image", img.shape, img.dtype)
+
+# cv2.imwrite("result.jpg", img)

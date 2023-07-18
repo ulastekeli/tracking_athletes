@@ -5,8 +5,7 @@
 
 class ObjectDetector {
 public:
-    ObjectDetector(const std::string& modelWeights, const std::string& modelConfiguration,
-                   const std::string& classNamesFile);
+    ObjectDetector(const std::string& modelWeights, const std::string& modelConfiguration);
     
     void loadModel();
     std::vector<Box> detectObjects(cv::Mat frame);
@@ -17,7 +16,6 @@ private:
 
     std::string modelWeights;
     std::string modelConfiguration;
-    std::string classNamesFile;
 
     std::vector<std::string> classNames;
     cv::dnn::Net net;

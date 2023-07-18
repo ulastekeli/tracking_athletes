@@ -50,7 +50,6 @@ std::vector<float> ReidModel::run(const cv::Mat& image)
     constexpr int in_ndim = 4;
     int64_t shape[4] = {1, 3, 256, 128};
 
-    std::cout<<image_transposed.size<<std::endl;
     // std::cout<<"Before tvmarrayalloc"<<std::endl;
     // TVMArrayAlloc(shape, in_ndim, dtype_code, dtype_bits, dtype_lanes, device_type, device_id, &input);
     // std::cout<<"Before memcpy"<<std::endl;
@@ -59,7 +58,6 @@ std::vector<float> ReidModel::run(const cv::Mat& image)
     float* data = reinterpret_cast<float*>(image_transposed.data);
     std::memcpy(static_cast<float*>(input->data), data, 3 * 256 * 128 * sizeof(float));
     // TVMArrayCopyFromBytes(input, image_transposed.data, 3 * 256 * 128 * sizeof(float));
-    std::cout<<"mem copied"<<std::endl;
 
     set_input("input0", input);
     // std::cout<<"Before run model"<<std::endl;

@@ -13,13 +13,17 @@ void Tracker::match(std::vector<Box>& detections, const cv::Mat& frame) {
         std::vector<int> close_tracks;
         for (int i = 0; i < tracks.size(); ++i) {
             const auto& track = tracks[i];
+            int lastFrame = track.frame_history.back();
+            int frameDif = frame_no - lastFrame + 1;
             const auto& box = track.box_history.back();
             float dist = std::sqrt(std::pow((box.xmin + box.xmax)/2 - (det.xmin + det.xmax)/2, 2) +
                                    std::pow((box.ymin + box.ymax)/2 - (det.ymin + det.ymax)/2, 2));
-            if (dist <= 100) {
+            
+            if (dist <= 100 * frameDif) {
                 close_tracks.push_back(i);
             }
         }
+        std::cout<<close_tracks.size()<<std::endl;
         // Crop the detected object and get its feature
         det.checkBounds(frame.cols, frame.rows);
         det.print();

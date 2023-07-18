@@ -4,13 +4,12 @@
 
 int main()
 {
-    std::string modelWeights = "../models/dev_models/pd_tiny4.weights";
-    std::string modelConfiguration = "../models/dev_models/pd_tiny4.cfg";
-    std::string classNamesFile = "../models/dev_models/pd.names";
+    std::string modelWeights = "../models/dev_models/pd_tiny3_best.weights";
+    std::string modelConfiguration = "../models/dev_models/pd_tiny3.cfg";
     
-    ObjectDetector detector(modelWeights, modelConfiguration, classNamesFile);
+    ObjectDetector detector(modelWeights, modelConfiguration);
     
-    cv::Mat image = cv::imread("../data/football.jpg");
+    cv::Mat image = cv::imread("../data/example.jpg");
     
     if (image.empty())
     {
@@ -24,7 +23,7 @@ int main()
     for (const auto& box : detectedBoxes)
     {
         cv::rectangle(image, cv::Rect(cv::Point(box.xmin, box.ymin), cv::Point(box.xmax, box.ymax)), cv::Scalar(0, 255, 0));
-        // std::cout << "Box: [" << box.xmin << ", " << box.ymin << ", " << box.xmax << ", " << box.ymax << ", " << box.confidence << "]\n";
+        std::cout << "Box: [" << box.xmin << ", " << box.ymin << ", " << box.xmax << ", " << box.ymax << ", " << box.confidence << "]\n";
     }
     cv::imwrite("out.jpg", image);
     

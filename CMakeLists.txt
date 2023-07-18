@@ -30,24 +30,31 @@ set(SOURCES
     ${PROJECT_SOURCE_DIR}/src/Reid.cpp
     ${PROJECT_SOURCE_DIR}/src/Track.cpp
     ${PROJECT_SOURCE_DIR}/src/Tracker.cpp
+    ${PROJECT_SOURCE_DIR}/src/TvmDetector.cpp
 )
 
 add_library(tracking ${SOURCES})
 target_link_libraries(tracking ${OpenCV_LIBS} fltk fltk_images tvm_runtime dl)
 # target_link_libraries(libs )
 
-add_executable(opencv_detector_test ${PROJECT_SOURCE_DIR}/tests/opencv_detector_test.cpp)
-add_executable(app_test ${PROJECT_SOURCE_DIR}/tests/app_test.cpp)
-add_executable(reid_test ${PROJECT_SOURCE_DIR}/tests/reid_test.cpp)
 add_executable(app ${PROJECT_SOURCE_DIR}/app.cpp)
-
 target_link_libraries(app tracking)
-target_link_libraries(app_test tracking)
-target_link_libraries(opencv_detector_test tracking)
-target_link_libraries(reid_test tracking)
-
 target_include_directories(app PRIVATE "/usr/include")
-target_include_directories(app_test PRIVATE "/usr/include")
+
+add_executable(opencv_detector_test ${PROJECT_SOURCE_DIR}/tests/opencv_detector_test.cpp)
+target_link_libraries(opencv_detector_test tracking)
 target_include_directories(opencv_detector_test PRIVATE "/usr/include")
+
+# add_executable(app_test ${PROJECT_SOURCE_DIR}/tests/app_test.cpp)
+# target_link_libraries(app_test tracking)
+# target_include_directories(app_test PRIVATE "/usr/include")
+
+add_executable(reid_test ${PROJECT_SOURCE_DIR}/tests/reid_test.cpp)
+target_link_libraries(reid_test tracking)
 target_include_directories(reid_test PRIVATE "/usr/include")
+
+add_executable(tvm_detector_test ${PROJECT_SOURCE_DIR}/tests/tvm_detector_test.cpp)
+target_link_libraries(tvm_detector_test tracking)
+target_include_directories(tvm_detector_test PRIVATE "/usr/include")
+
 
